@@ -1,4 +1,5 @@
 ﻿using Project.Service.Models;
+using Project.Service2.Models;
 using System.Collections.Generic;
 
 namespace Project.Service.Repository
@@ -6,7 +7,7 @@ namespace Project.Service.Repository
     public interface IVehicleMakeRepository
     {
 
-        ICollection<VehicleMake> GetVehicleMakes(string search, string sortBy, int page);
+        ICollection<VehicleMake> GetVehicleMakes(Filtering search, Sorting sortBy, Paging paging);
         bool VehicleMakeExists(string name);
         bool VehicleMakeExists(int id);
         bool CreateVehicleMake(VehicleMake vehicleMake);

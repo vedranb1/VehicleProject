@@ -1,4 +1,5 @@
 ﻿using Project.Service.Models;
+using Project.Service2.Models;
 using System.Collections.Generic;
 
 namespace Project.Service.Repository.IRepository
@@ -6,7 +7,7 @@ namespace Project.Service.Repository.IRepository
     public interface IVehicleModelRepository
     {
 
-        ICollection<VehicleModel> GetVehicleModels(string search, string sortBy, int page);
+        ICollection<VehicleModel> GetVehicleModels(Filtering search, Sorting sortBy, Paging paging);
         bool VehicleModelExists(string name);
         bool VehicleModelExists(int id);
         bool CreateVehicleModel(VehicleModel vehicleModel);

@@ -5,12 +5,13 @@ using Project.Service.Models;
 using Project.Service.Models.DTOs;
 using Project.Service.Repository;
 using Project.Service.Repository.IRepository;
+using Project.Service2.Models;
 using System.Collections.Generic;
 
 namespace Project.Service.Controllers
 {
     [Route("api/v{version:apiVersion}/vehiclemake")]
-    [ApiExplorerSettings(GroupName = "VehicleProjectAPISpec")]
+    //[ApiExplorerSettings(GroupName = "VehicleProjectAPISpec")]
     [ApiController]
     public class VehicleMakeController : ControllerBase
     {
@@ -26,19 +27,19 @@ namespace Project.Service.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<VehicleMakeDTO>))]
-        public IActionResult GetVehicleMakes(string search, string sortBy, int page = 1)
+        public IActionResult GetVehicleMakes([FromQuery] Filtering search, [FromQuery] Sorting sortBy, [FromQuery] Paging paging)
         {
 
-            var objList = _vmRepo.GetVehicleMakes(search, sortBy, page);
+            var vehicleMakesList = _vmRepo.GetVehicleMakes(search, sortBy, paging);
 
-            var objDTO = new List<VehicleMakeDTO>();
+            var vehicleMakesDTO = new List<VehicleMakeDTO>();
 
-            foreach (var obj in objList)
+            foreach (var vehicleMakes in vehicleMakesList)
             {
-                objDTO.Add(_mapper.Map<VehicleMakeDTO>(obj));
+                vehicleMakesDTO.Add(_mapper.Map<VehicleMakeDTO>(vehicleMakes));
             }
 
-            return Ok(objList);
+            return Ok(vehicleMakesList);
 
         }
 
@@ -48,13 +49,13 @@ namespace Project.Service.Controllers
         [ProducesDefaultResponseType]
         public IActionResult GetVehicleMake(int vehicleMakeId)
         {
-            var obj = _vmRepo.GetVehicleMake(vehicleMakeId);
-            if (obj == null)
+            var vehicleMake = _vmRepo.GetVehicleMake(vehicleMakeId);
+            if (vehicleMake == null)
             {
                 return NotFound();
             }
-            var objDTO = _mapper.Map<VehicleMakeDTO>(obj);
-            return Ok(objDTO);
+            var vehicleMakeDTO = _mapper.Map<VehicleMakeDTO>(vehicleMake);
+            return Ok(vehicleMakeDTO);
         }
 
         [HttpPost]

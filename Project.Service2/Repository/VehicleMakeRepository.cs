@@ -1,5 +1,6 @@
 ﻿using Project.Service.Data;
 using Project.Service.Models;
+using Project.Service2.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,7 +10,6 @@ namespace Project.Service.Repository
     {
 
         private readonly ApplicationDbContext _db;
-        public static int PAGE_SIZE { get; set; } = 10;
 
         public VehicleMakeRepository(ApplicationDbContext db)
         {
@@ -33,19 +33,19 @@ namespace Project.Service.Repository
             return _db.vehicleMakes.FirstOrDefault(a => a.Id == vehicleMakeId);
         }
 
-        public ICollection<VehicleMake> GetVehicleMakes(string search, string sortBy, int page)
+        public ICollection<VehicleMake> GetVehicleMakes(Filtering search, Sorting sortBy, Paging paging)
         {
             var vMakes = _db.vehicleMakes.AsQueryable();
 
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search.SearchText))
             {
-                vMakes = vMakes.Where(vm => vm.Name.Contains(search)
-                || vm.Abrv.Contains(search));
+                vMakes = vMakes.Where(vm => vm.Name.Contains(search.SearchText)
+                || vm.Abrv.Contains(search.SearchText));
             }
 
-            if (!string.IsNullOrEmpty(sortBy))
+            if (!string.IsNullOrEmpty(sortBy.SortVehicleMake.ToString()))
             {
-                switch (sortBy)
+                switch (sortBy.SortVehicleMake.ToString())
                 {
                     case "Name_Desc": vMakes = vMakes.OrderByDescending(vm => vm.Name); break;
                     case "Name_Asc": vMakes = vMakes.OrderBy(vm => vm.Name); break;
@@ -54,7 +54,7 @@ namespace Project.Service.Repository
                 }
             }
 
-            vMakes = vMakes.Skip((page -1) * PAGE_SIZE).Take(PAGE_SIZE);
+            vMakes = vMakes.Skip((paging.Page -1) * paging.PageSize).Take(paging.PageSize);
 
             return vMakes.ToList();
         }

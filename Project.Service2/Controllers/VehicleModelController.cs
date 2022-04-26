@@ -6,11 +6,13 @@ using Project.Service.Data;
 using Project.Service.Models;
 using Project.Service.Models.DTOs;
 using Project.Service.Repository.IRepository;
+using Project.Service2.Models;
 using System.Collections.Generic;
 
 namespace Project.Service.Controllers
 {
     [Route("api/v{version:apiVersion}/vehiclemodel")]
+    //[ApiExplorerSettings(GroupName = "VehicleProjectAPISpec")]
     [ApiController]
     public class VehicleModelController : ControllerBase
     {
@@ -27,19 +29,19 @@ namespace Project.Service.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<VehicleModelDTO>))]
-        public IActionResult GetVehicleModels(string search, string sortBy, int page = 1)
+        public IActionResult GetVehicleModels([FromQuery] Filtering search, [FromQuery] Sorting sortBy, [FromQuery] Paging paging)
         {
 
-            var objList = _vmRepo.GetVehicleModels(search, sortBy, page);
+            var vehicleModelList = _vmRepo.GetVehicleModels(search, sortBy, paging);
 
-            var objDTO = new List<VehicleModelDTO>();
+            var vehicleModelDTO = new List<VehicleModelDTO>();
 
-            foreach (var obj in objList)
+            foreach (var vehicleModel in vehicleModelList)
             {
-                objDTO.Add(_mapper.Map<VehicleModelDTO>(obj));
+                vehicleModelDTO.Add(_mapper.Map<VehicleModelDTO>(vehicleModel));
             }
 
-            return Ok(objList);
+            return Ok(vehicleModelList);
 
         }
 
@@ -49,13 +51,13 @@ namespace Project.Service.Controllers
         [ProducesDefaultResponseType]
         public IActionResult GetVehicleModel(int vehicleModelId)
         {
-            var obj = _vmRepo.GetVehicleModel(vehicleModelId);
-            if (obj == null)
+            var vehicleModel = _vmRepo.GetVehicleModel(vehicleModelId);
+            if (vehicleModel == null)
             {
                 return NotFound();
             }
-            var objDTO = _mapper.Map<VehicleModelDTO>(obj);
-            return Ok(objDTO);
+            var vehicleModelDTO = _mapper.Map<VehicleModelDTO>(vehicleModel);
+            return Ok(vehicleModelDTO);
         }
 
 
